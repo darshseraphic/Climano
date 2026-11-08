@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Climano</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <div class="brand-lockup">
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" role="presentation">
+            <path d="M6.1 18.2h11.1a4.15 4.15 0 0 0 .35-8.28A5.8 5.8 0 0 0 6.4 8.8a4.72 4.72 0 0 0-.3 9.4Z"></path>
+          </svg>
+        </div>
+        <div>
+          <div class="brand-name">Climano</div>
+          <div class="brand-caption">WEATHER</div>
+        </div>
+      </div>
+      <div class="top-actions">
+        <button id="unitButton" class="unit-button" type="button" aria-label="Switch temperature unit">°C</button>
+        <button id="themeButton" class="theme-button" type="button" aria-label="Change theme" title="Change theme">
+          <span class="theme-dot" aria-hidden="true"></span>
+          <span id="themeLabel">System</span>
+        </button>
+      </div>
+    </header>
+
+    <section class="intro">
+      <p class="eyebrow">YOUR LOCAL FORECAST</p>
+      <h1>Weather, made clear.</h1>
+      <p class="intro-copy">A considered view of the conditions around you.</p>
+    </section>
+
+    <section class="location-tools" aria-label="Location controls">
+      <form id="searchForm" class="search-form">
+        <label class="sr-only" for="cityInput">Search city</label>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.5"></circle><path d="m16 16 4.5 4.5"></path></svg>
+        <input id="cityInput" type="search" placeholder="Search city or place" autocomplete="off" spellcheck="false">
+        <button class="search-submit" type="submit">Search</button>
+      </form>
+      <div id="searchResults" class="search-results" hidden></div>
+      <div class="location-line">
+        <div class="location-label">
+          <span class="location-pin" aria-hidden="true">⌖</span>
+          <span id="locationName">Finding your location…</span>
+          <span id="locationMethod" class="location-method"></span>
+        </div>
+        <button id="deviceLocationButton" class="text-button" type="button">Use device location</button>
+      </div>
+    </section>
+
+    <div id="statusMessage" class="status-message" role="status" aria-live="polite">Finding your local forecast…</div>
+
+    <section id="weatherContent" class="weather-content" hidden>
+      <section class="current-card card" aria-labelledby="currentHeading">
+        <div class="current-topline">
+          <div>
+            <p class="eyebrow" id="currentHeading">CURRENT CONDITIONS</p>
+            <p id="currentCondition" class="condition-name">—</p>
+          </div>
+          <div id="currentWeatherIcon" class="weather-symbol" aria-hidden="true">☼</div>
+        </div>
+        <div class="temperature-line">
+          <div class="temperature-value"><span id="currentTemperature">—</span><span class="degree">°</span></div>
+          <div class="temperature-context">
+            <div>Feels like <strong id="currentFeelsLike">—</strong>°</div>
+            <div class="high-low">H <span id="todayHigh">—</span>° <span class="separator">/</span> L <span id="todayLow">—</span>°</div>
+          </div>
+        </div>
+        <div class="current-bottomline">
+          <span id="dayState">—</span>
+          <span id="updatedAt">—</span>
+        </div>
+      </section>
+
+      <section class="metric-grid" aria-label="Current weather measurements">
+        <article class="metric-card">
+          <span class="metric-label">Humidity</span>
+          <strong id="currentHumidity" class="metric-value">—</strong>
+          <span class="metric-unit">relative humidity</span>
+        </article>
+        <article class="metric-card">
+          <span class="metric-label">Rain</span>
+          <strong id="currentRain" class="metric-value">—</strong>
+          <span class="metric-unit">millimetres</span>
+        </article>
+        <article class="metric-card">
+          <span class="metric-label">Sun</span>
+          <strong id="currentSunState" class="metric-value">—</strong>
+          <span class="metric-unit">at this location</span>
+        </article>
+      </section>
+
+      <section class="section-block" aria-labelledby="daysHeading">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">THE BIG PICTURE</p>
+            <h2 id="daysHeading">Daily forecast</h2>
+          </div>
+          <span id="dateRangeLabel" class="section-meta"></span>
+        </div>
+        <div id="dailyForecast" class="daily-strip" aria-label="Daily forecast dates"></div>
+      </section>
+
+      <section class="section-block" aria-labelledby="hoursHeading">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">HOUR BY HOUR</p>
+            <h2 id="hoursHeading">Hourly forecast</h2>
+          </div>
+          <span id="selectedDateLabel" class="section-meta"></span>
+        </div>
+        <div id="hourlyForecast" class="hourly-strip" aria-label="Hourly forecast"></div>
+      </section>
+
+      <section class="section-block detail-section" aria-labelledby="detailHeading">
+        <div class="section-heading detail-heading">
+          <div>
+            <p class="eyebrow">SELECTED HOUR</p>
+            <h2 id="detailHeading">Weather details</h2>
+          </div>
+          <span id="selectedHourLabel" class="section-meta">—</span>
+        </div>
+        <div id="hourlyDetails" class="detail-grid"></div>
+      </section>
+
+      <section class="sun-card card" aria-label="Sunrise and sunset">
+        <div class="sun-item">
+          <span class="sun-symbol" aria-hidden="true">↗</span>
+          <div><span class="metric-label">Sunrise</span><strong id="sunriseTime">—</strong></div>
+        </div>
+        <div class="sun-divider"></div>
+        <div class="sun-item">
+          <span class="sun-symbol sun-down" aria-hidden="true">↘</span>
+          <div><span class="metric-label">Sunset</span><strong id="sunsetTime">—</strong></div>
+        </div>
+      </section>
+    </section>
+
+    <section id="errorPanel" class="error-panel" hidden>
+      <div class="error-mark" aria-hidden="true">!</div>
+      <div>
+        <strong>Forecast unavailable</strong>
+        <p id="errorText">Check your connection and try again.</p>
+      </div>
+      <button id="retryButton" class="outline-button" type="button">Retry</button>
+    </section>
+
+    <footer class="footer">
+      <div class="footer-note"><span class="shield" aria-hidden="true">◇</span><span>Weather data by Open-Meteo</span></div>
+      <div class="footer-subnote">IP lookup uses ipapi.co; device location is optional.</div>
+      <div class="footer-meta"><span>Coordinates are sent to Open-Meteo for the forecast.</span><span>v1.1.2</span></div>
+    </footer>
+  </main>
+  <script src="popup.js"></script>
+</body>
+</html>
